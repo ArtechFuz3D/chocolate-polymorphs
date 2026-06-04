@@ -1,0 +1,16 @@
+{
+  "name": "Chocolate Polymorph Explorer",
+  "short_name": "Chocolate Crystals",
+  "description": "Interactive visualization of cocoa butter crystal polymorphs.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#120c09",
+  "theme_color": "#120c09",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
