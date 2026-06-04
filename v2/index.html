@@ -1,4 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Chocolate Polymorphs</title>
+
+<meta
+    name="description"
+    content="Interactive visualization of the six cocoa butter polymorphs. Learn how chocolate tempering works, why Form V creates perfect snap and gloss, and how Form VI contributes to bloom."
+>
+
+<meta
+    name="keywords"
+    content="chocolate polymorphs, cocoa butter crystals, chocolate tempering, form V chocolate, chocolate bloom, food science, confectionery, chocolate visualization"
+>
+
+<meta name="author" content="Your Name">
+<meta name="robots" content="index,follow">
+
+<!-- Theme -->
+<meta name="theme-color" content="#120c09">
+<meta name="color-scheme" content="dark">
+
+<!-- Canonical -->
+<link
+    rel="canonical"
+    href="https://artechfuz3d.github.io/chocolate-polymorphs/"
+>
+
+<!-- Favicons -->
+    <link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chocolate Polymorphs">
+<meta
+    property="og:description"
+    content="Explore the six crystal forms of cocoa butter and discover why Form V creates perfect chocolate."
+>
+<meta
+    property="og:image"
+    content="https://artechfuz3d.github.io/chocolate-polymorphs/og-image.png"
+>
+<meta
+    property="og:url"
+    content="https://artechfuz3d.github.io/chocolate-polymorphs/"
+>
+<meta property="og:site_name" content="Chocolate Polymorphsr">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chocolate Polymorphs">
+<meta
+    name="twitter:description"
+    content="Interactive guide to the six cocoa butter crystal structures and chocolate tempering."
+>
+<meta
+    name="twitter:image"
+    content="https://artechfuz3d.github.io/chocolate-polymorphs/og-image.png"
+>
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="./site.webmanifest">
+
+
+
+<style>
+:root{
+    --bg:#0f0a08;
+    --panel:#1a120f;
+    --text:#f5e7d5;
+    --muted:#bca58d;
+    --accent:#d9a15b;
+    --good:#7bd389;
+    --bad:#ff7a7a;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top, #2a1b14 0%, #120c09 45%, #080605 100%);
+    color:var(--text);
+    font-family:Inter,system-ui,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+.container{
+    width:min(1400px,100%);
+    display:grid;
+    grid-template-columns:600px 1fr;
+    gap:40px;
+}
+
+.wheel-wrap{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.wheel{
+    width:560px;
+    height:560px;
+    border-radius:50%;
+    position:relative;
+    background:
+        radial-gradient(circle at center,
+            rgba(255,255,255,.03) 0%,
+            rgba(255,255,255,.01) 60%,
+            transparent 100%);
+}
+
+.center{
+    position:absolute;
+    inset:170px;
+    border-radius:50%;
+    background:linear-gradient(145deg,#241812,#120c09);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    border:1px solid rgba(255,255,255,.08);
+    z-index:5;
+}
+
+.center h1{
+    font-size:2rem;
+    margin-bottom:10px;
+}
+
+.center p{
+    width:80%;
+    color:var(--muted);
+    line-height:1.4;
+}
+
+.segment{
+    position:absolute;
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:.35s;
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(6px);
+}
+
+.segment:hover{
+    transform:scale(1.08);
+}
+
+.segment.active{
+    transform:scale(1.15);
+    box-shadow:0 0 40px rgba(217,161,91,.45);
+}
+
+.segment .label{
+    text-align:center;
+}
+
+.segment h3{
+    font-size:1.7rem;
+}
+
+.segment span{
+    font-size:.85rem;
+    color:var(--muted);
+}
+
+.panel{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:24px;
+    padding:35px;
+    backdrop-filter:blur(12px);
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:999px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.title{
+    font-size:3rem;
+    margin-bottom:12px;
+}
+
+.desc{
+    color:var(--muted);
+    line-height:1.7;
+    font-size:1.05rem;
+}
+
+.stats{
+    margin-top:28px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+}
+
+.card{
+    background:rgba(255,255,255,.03);
+    padding:18px;
+    border-radius:16px;
+}
+
+.card label{
+    color:var(--muted);
+    display:block;
+    margin-bottom:6px;
+    font-size:.85rem;
+}
+
+.card strong{
+    font-size:1.2rem;
+}
+
+.timeline{
+    margin-top:35px;
+}
+
+.bar{
+    height:18px;
+    border-radius:999px;
+    overflow:hidden;
+    display:flex;
+    margin-top:12px;
+}
+
+.phase{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:.75rem;
+    font-weight:700;
+    color:white;
+}
+
+.legend{
+    margin-top:20px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.legend div{
+    padding:8px 12px;
+    background:rgba(255,255,255,.05);
+    border-radius:10px;
+}
+
+@media(max-width:1100px){
+    .container{
+        grid-template-columns:1fr;
+    }
+
+    .wheel{
+        width:90vw;
+        height:90vw;
+        max-width:560px;
+        max-height:560px;
+    }
+}
+.footer {
+  position: relative;
+  width: 100%;
+  padding: 24px 40px;
+  margin-top: auto;
+
+  background: rgba(10, 15, 25, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: rgba(255, 255, 255, 0.7);
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}    
+</style>
+  
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font-sans,system-ui);background:transparent;color:var(--color-text-primary)}
@@ -91,6 +435,208 @@ canvas{display:block;border-radius:10px;border:0.5px solid var(--color-border-te
 .leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
 .leg span{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 </style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="wheel-wrap">
+<div class="wheel" id="wheel">
+
+<div class="center">
+<h1>Cocoa Butter</h1>
+<p>
+The same fat can crystallize in six different ways.
+    While all 6 are required for an optimal process,
+only one creates the glossy, snappy chocolate we love.
+</p>
+</div>
+
+</div>
+</div>
+
+<div class="panel">
+
+<div id="badge" class="badge"></div>
+
+<h2 id="title" class="title"></h2>
+
+<p id="desc" class="desc"></p>
+
+<div class="stats">
+<div class="card">
+<label>Melting Point</label>
+<strong id="melt"></strong>
+</div>
+
+<div class="card">
+<label>Texture</label>
+<strong id="texture"></strong>
+</div>
+
+<div class="card">
+<label>Stability</label>
+<strong id="stability"></strong>
+</div>
+
+<div class="card">
+<label>Importance</label>
+<strong id="importance"></strong>
+</div>
+</div>
+
+<div class="timeline">
+<h3>Crystal Stability Progression</h3>
+
+<div class="bar">
+<div class="phase" style="background:#6d3f2d;">I</div>
+<div class="phase" style="background:#87503a;">II</div>
+<div class="phase" style="background:#9e6046;">III</div>
+<div class="phase" style="background:#b47052;">IV</div>
+<div class="phase" style="background:#d79d5d;">V</div>
+<div class="phase" style="background:#f0c67f;color:black;">VI</div>
+</div>
+
+<div class="legend">
+<div>Unstable → Stable</div>
+<div>Soft → Hard</div>
+<div>Fast Melt → Slow Melt</div>
+</div>
+</div>
+
+</div>
+<div class="footer">
+  <div class="footer-content">
+    <span>© 2026 ArtechFuz3D</span>
+    <div class="footer-links">
+      <a href="https://artechfuz3d.github.io/chocolate-polymorphs/v2">v2 Peek</a>
+      <a href="https://github.com/ArtechFuz3D/chocolate-polymorphs">Contact</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const forms = [
+{
+id:"I",
+temp:"17°C",
+texture:"Very Soft",
+stability:"Very Low",
+importance:"Fresh Cooling",
+status:"Unstable",
+color:"#6d3f2d",
+desc:"Form I crystals form when chocolate cools very quickly. They melt easily in your hand and produce a dull, crumbly chocolate with almost no snap."
+},
+{
+id:"II",
+temp:"21°C",
+texture:"Soft",
+stability:"Low",
+importance:"Temporary",
+status:"Unstable",
+color:"#87503a",
+desc:"Form II is slightly more organized but still weak. Chocolate remains soft and lacks the glossy appearance associated with quality tempering."
+},
+{
+id:"III",
+temp:"26°C",
+texture:"Firm",
+stability:"Moderate",
+importance:"Transition",
+status:"Unstable",
+color:"#9e6046",
+desc:"Form III begins developing more structure. The chocolate becomes firmer but still lacks the shine, texture and shelf stability desired by chocolatiers."
+},
+{
+id:"IV",
+temp:"28°C",
+texture:"Quite Firm",
+stability:"Medium",
+importance:"Near Tempered",
+status:"Semi-Stable",
+color:"#b47052",
+desc:"Form IV can appear reasonably attractive but eventually transforms into more stable crystal forms. Professional tempering aims to move beyond this stage."
+},
+{
+id:"V",
+temp:"33–34°C",
+texture:"Perfect Snap",
+stability:"High",
+importance:"The Goal",
+status:"Ideal",
+color:"#d79d5d",
+desc:"Form V is the legendary chocolate crystal. It creates gloss, crisp snap, smooth mouthfeel and melts close to body temperature. Proper tempering is the art of maximizing Form V crystals."
+},
+{
+id:"VI",
+temp:"36°C",
+texture:"Very Hard",
+stability:"Highest",
+importance:"Aging & Bloom",
+status:"Over-Aged",
+color:"#f0c67f",
+desc:"Form VI is the most stable crystal structure. Over time Form V slowly converts into Form VI, often contributing to fat bloom—the pale surface haze seen on old chocolate."
+}
+];
+
+const wheel = document.getElementById("wheel");
+
+forms.forEach((form,index)=>{
+    const angle = (360 / forms.length) * index - 90;
+    const radius = 220;
+
+    const x = Math.cos(angle * Math.PI/180) * radius;
+    const y = Math.sin(angle * Math.PI/180) * radius;
+
+    const node = document.createElement("div");
+    node.className = "segment";
+
+    node.style.left = `calc(50% + ${x}px - 70px)`;
+    node.style.top = `calc(50% + ${y}px - 70px)`;
+    node.style.background = form.color;
+
+    node.innerHTML = `
+        <div class="label">
+            <h3>${form.id}</h3>
+            <span>${form.temp}</span>
+        </div>
+    `;
+
+    node.onclick = ()=>{
+        document.querySelectorAll(".segment")
+            .forEach(s=>s.classList.remove("active"));
+
+        node.classList.add("active");
+        update(form);
+    };
+
+    wheel.appendChild(node);
+});
+
+function update(f){
+
+    title.textContent = `Form ${f.id}`;
+    desc.textContent = f.desc;
+    melt.textContent = f.temp;
+    texture.textContent = f.texture;
+    stability.textContent = f.stability;
+    importance.textContent = f.importance;
+
+    badge.textContent = f.status;
+    badge.style.background = f.color;
+
+    badge.style.color =
+        f.id === "VI" ? "#000" : "#fff";
+}
+
+update(forms[4]);
+
+document.querySelectorAll(".segment")[4]
+.classList.add("active");
+</script>
+
+
 
 <h2 class="sr-only">Chocolate crystal science: live reactor, tempering path, morphology, energy landscape, snap test, fat bloom, failure modes and guided story</h2>
 
@@ -730,3 +1276,5 @@ setTimeout(()=>{
   initBloom();
 },120);
 </script>
+</body>
+</html>
