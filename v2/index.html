@@ -341,8 +341,116 @@ body{
     justify-content: center;
   }
 }    
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --choc-bg:#0f0a08;--panel:rgba(255,255,255,.04);--border:rgba(255,255,255,.1);
+  --text:var(--color-text-primary);--muted:var(--color-text-secondary);
+  --accent:#d9a15b;--good:#6fcf8a;--bad:#ff7a7a;--warn:#f0c040;
+  --I:#6d3f2d;--II:#87503a;--III:#9e6046;--IV:#b47052;--V:#d79d5d;--VI:#f0c67f;
+}
+body{font-family:var(--font-sans,system-ui);background:transparent}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+#app{padding:16px 0;max-width:760px;margin:0 auto}
+
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--panel);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);padding:4px}
+.tab{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--muted);font-size:12px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:inherit}
+.tab.on{background:var(--color-background-primary,#fff);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+
+.section{display:none}
+.section.on{display:block}
+
+.card{background:var(--panel);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);padding:20px;margin-bottom:16px}
+
+/* REACTOR */
+#reactor-canvas{width:100%;height:340px;border-radius:12px;border:0.5px solid var(--border);background:#0d0907;cursor:crosshair}
+.temp-ctrl{display:flex;align-items:center;gap:12px;margin-top:12px}
+.temp-ctrl label{font-size:13px;color:var(--muted);white-space:nowrap}
+.temp-ctrl input[type=range]{flex:1}
+#temp-display{font-size:22px;font-weight:500;min-width:60px}
+.crystal-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cleg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.cleg span{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* TEMPERING PATH */
+.temp-path{position:relative;margin-bottom:12px}
+#path-canvas{width:100%;height:160px;border-radius:8px;border:0.5px solid var(--border)}
+.path-stages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.pstage{background:var(--panel);border:0.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all .2s}
+.pstage:hover,.pstage.on{border-color:var(--accent)}
+.pstage.on{background:rgba(217,161,91,.1)}
+.pstage h4{font-size:12px;font-weight:500;margin-bottom:4px}
+.pstage p{font-size:11px;color:var(--muted)}
+.pstage .temp{font-size:18px;font-weight:500;color:var(--accent)}
+
+/* POPULATION */
+.pop-bars{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.pop-row{display:flex;align-items:center;gap:8px}
+.pop-row .form-lbl{font-size:12px;font-weight:500;min-width:48px}
+.pop-track{flex:1;height:20px;background:var(--panel);border-radius:4px;overflow:hidden;border:0.5px solid var(--border)}
+.pop-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.pop-pct{font-size:12px;color:var(--muted);min-width:36px;text-align:right}
+
+/* MORPHOLOGY */
+.morph-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.morph-card{background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .2s}
+.morph-card:hover,.morph-card.sel{transform:scale(1.05)}
+.morph-card.sel{box-shadow:0 0 16px rgba(217,161,91,.4);border-color:var(--accent)}
+.morph-card svg{margin-bottom:6px}
+.morph-card h4{font-size:11px;font-weight:500;margin-bottom:2px}
+.morph-card p{font-size:10px;color:var(--muted)}
+#morph-detail{margin-top:12px;background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:16px;align-items:flex-start}
+#morph-detail svg{flex-shrink:0}
+#morph-detail .detail-text h3{font-size:16px;font-weight:500;margin-bottom:6px}
+#morph-detail .detail-text p{font-size:13px;color:var(--muted);line-height:1.6}
+#morph-detail .stats-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+#morph-detail .stats-mini div{background:rgba(255,255,255,.03);border-radius:6px;padding:8px 10px}
+#morph-detail .stats-mini label{font-size:10px;color:var(--muted);display:block}
+#morph-detail .stats-mini strong{font-size:13px}
+
+/* ENERGY */
+#energy-canvas{width:100%;height:220px;border-radius:8px;border:0.5px solid var(--border)}
+.energy-desc{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
+
+/* SNAP */
+.snap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.snap-card{background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.snap-card:hover{border-color:var(--accent)}
+.snap-card h4{font-size:12px;font-weight:500;margin-bottom:8px}
+.snap-result{font-size:11px;margin-top:8px;padding:5px 8px;border-radius:6px}
+.snap-demo{height:50px;display:flex;align-items:center;justify-content:center;position:relative}
+#snap-detail{margin-top:12px;background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+#snap-detail h3{font-size:15px;font-weight:500;margin-bottom:8px}
+#snap-detail .snap-viz{display:flex;justify-content:center;margin:10px 0}
+#snap-detail p{font-size:13px;color:var(--muted)}
+
+/* BLOOM */
+#bloom-canvas{width:100%;height:200px;border-radius:8px;border:0.5px solid var(--border)}
+.bloom-ctrl{display:flex;align-items:center;gap:12px;margin-top:10px}
+.bloom-ctrl label{font-size:13px;color:var(--muted);white-space:nowrap}
+.bloom-ctrl input{flex:1}
+#bloom-info{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.6}
+
+/* STORY */
+.story-panel{text-align:center}
+.story-step{display:none;animation:fadeIn .4s}
+.story-step.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#story-canvas{width:100%;height:260px;border-radius:10px;border:0.5px solid var(--border);background:#0d0907;margin-bottom:16px}
+.story-narration{font-size:16px;line-height:1.7;margin-bottom:12px;min-height:60px}
+.story-narration strong{color:var(--accent)}
+.story-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:16px}
+.story-nav button{padding:8px 20px;border-radius:20px;border:0.5px solid var(--border);background:transparent;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+.story-nav button:hover{background:var(--panel)}
+.story-nav button.primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:500}
+.story-dots{display:flex;gap:6px}
+.story-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer}
+.story-dot.on{background:var(--accent);width:20px;border-radius:4px}
+
+.stage-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;margin-bottom:8px}
 </style>
- 
+
 </head>
 <body>
 
@@ -423,7 +531,105 @@ only one creates the glossy, snappy chocolate we love.
   <!-- </div> -->
 <!-- </div> -->
 </div>
+<h2 class="sr-only">Chocolate tempering simulator showing crystal formation, morphology, energy landscape, and bloom across interactive tabs</h2>
+<div id="app">
+  <div class="tabs">
+    <button class="tab on" onclick="showTab('reactor')">Crystal Reactor</button>
+    <button class="tab" onclick="showTab('temper')">Tempering</button>
+    <button class="tab" onclick="showTab('morph')">Morphology</button>
+    <button class="tab" onclick="showTab('energy')">Energy</button>
+    <button class="tab" onclick="showTab('snap')">Snap Test</button>
+    <button class="tab" onclick="showTab('bloom')">Bloom</button>
+    <button class="tab" onclick="showTab('story')">Story Mode</button>
+  </div>
 
+  <!-- REACTOR -->
+  <div id="tab-reactor" class="section on">
+    <div class="card" style="padding:16px">
+      <canvas id="reactor-canvas"></canvas>
+      <div class="temp-ctrl">
+        <label>Temperature</label>
+        <input type="range" min="15" max="55" value="27" id="temp-slider" step="1" oninput="updateReactor(this.value)">
+        <div id="temp-display" style="color:var(--accent)">27°C</div>
+      </div>
+      <div class="crystal-legend" id="reactor-legend"></div>
+    </div>
+    <div class="card">
+      <div class="pop-bars" id="reactor-pop"></div>
+    </div>
+  </div>
+
+  <!-- TEMPERING -->
+  <div id="tab-temper" class="section">
+    <div class="card">
+      <canvas id="path-canvas"></canvas>
+    </div>
+    <div class="path-stages">
+      <div class="pstage on" onclick="setTempStage(0)">
+        <div class="temp">45°C</div>
+        <h4>Step 1: Melt</h4>
+        <p>All crystals dissolve into liquid cocoa butter</p>
+      </div>
+      <div class="pstage" onclick="setTempStage(1)">
+        <div class="temp">27°C</div>
+        <h4>Step 2: Cool</h4>
+        <p>Forms I, II, III, IV, V nucleate simultaneously</p>
+      </div>
+      <div class="pstage" onclick="setTempStage(2)">
+        <div class="temp">31°C</div>
+        <h4>Step 3: Reheat</h4>
+        <p>Forms I–IV melt away. Form V seeds survive</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="pop-bars" id="temper-pop"></div>
+    </div>
+  </div>
+
+  <!-- MORPHOLOGY -->
+  <div id="tab-morph" class="section">
+    <div class="morph-grid" id="morph-grid"></div>
+    <div id="morph-detail"></div>
+  </div>
+
+  <!-- ENERGY -->
+  <div id="tab-energy" class="section">
+    <div class="card" style="padding:16px">
+      <canvas id="energy-canvas"></canvas>
+      <p class="energy-desc">Each crystal form occupies a local minimum on the free energy surface. Cocoa butter spontaneously transforms toward lower-energy configurations. Form VI is the global minimum, but Form V kinetically dominates at tempering temperatures — making it stable enough for months of shelf life.</p>
+    </div>
+  </div>
+
+  <!-- SNAP TEST -->
+  <div id="tab-snap" class="section">
+    <div class="snap-grid" id="snap-grid"></div>
+    <div id="snap-detail"></div>
+  </div>
+
+  <!-- BLOOM -->
+  <div id="tab-bloom" class="section">
+    <div class="card" style="padding:16px">
+      <canvas id="bloom-canvas"></canvas>
+      <div class="bloom-ctrl">
+        <label>Storage time</label>
+        <input type="range" min="0" max="100" value="0" id="bloom-slider" step="1" oninput="updateBloom(this.value)">
+        <span id="bloom-time" style="font-size:13px;color:var(--muted);min-width:56px">Fresh</span>
+      </div>
+      <p id="bloom-info"></p>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <div id="tab-story" class="section story-panel">
+    <canvas id="story-canvas"></canvas>
+    <div id="story-steps"></div>
+    <div class="story-nav">
+      <button onclick="storyPrev()">Back</button>
+      <div class="story-dots" id="story-dots"></div>
+      <button class="primary" onclick="storyNext()" id="story-btn">Next</button>
+    </div>
+  </div>
+</div>
 <script>
 const forms = [
 {
@@ -542,220 +748,7 @@ update(forms[4]);
 
 document.querySelectorAll(".segment")[4]
 .classList.add("active");
-</script>
 
-
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --choc-bg:#0f0a08;--panel:rgba(255,255,255,.04);--border:rgba(255,255,255,.1);
-  --text:var(--color-text-primary);--muted:var(--color-text-secondary);
-  --accent:#d9a15b;--good:#6fcf8a;--bad:#ff7a7a;--warn:#f0c040;
-  --I:#6d3f2d;--II:#87503a;--III:#9e6046;--IV:#b47052;--V:#d79d5d;--VI:#f0c67f;
-}
-body{font-family:var(--font-sans,system-ui);background:transparent}
-h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-
-#app{padding:16px 0;max-width:760px;margin:0 auto}
-
-.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--panel);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);padding:4px}
-.tab{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--muted);font-size:12px;border-radius:10px;cursor:pointer;transition:all .2s;font-family:inherit}
-.tab.on{background:var(--color-background-primary,#fff);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.15)}
-
-.section{display:none}
-.section.on{display:block}
-
-.card{background:var(--panel);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);padding:20px;margin-bottom:16px}
-
-/* REACTOR */
-#reactor-canvas{width:100%;height:340px;border-radius:12px;border:0.5px solid var(--border);background:#0d0907;cursor:crosshair}
-.temp-ctrl{display:flex;align-items:center;gap:12px;margin-top:12px}
-.temp-ctrl label{font-size:13px;color:var(--muted);white-space:nowrap}
-.temp-ctrl input[type=range]{flex:1}
-#temp-display{font-size:22px;font-weight:500;min-width:60px}
-.crystal-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.cleg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
-.cleg span{width:10px;height:10px;border-radius:2px;display:inline-block}
-
-/* TEMPERING PATH */
-.temp-path{position:relative;margin-bottom:12px}
-#path-canvas{width:100%;height:160px;border-radius:8px;border:0.5px solid var(--border)}
-.path-stages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-.pstage{background:var(--panel);border:0.5px solid var(--border);border-radius:8px;padding:10px;text-align:center;cursor:pointer;transition:all .2s}
-.pstage:hover,.pstage.on{border-color:var(--accent)}
-.pstage.on{background:rgba(217,161,91,.1)}
-.pstage h4{font-size:12px;font-weight:500;margin-bottom:4px}
-.pstage p{font-size:11px;color:var(--muted)}
-.pstage .temp{font-size:18px;font-weight:500;color:var(--accent)}
-
-/* POPULATION */
-.pop-bars{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-.pop-row{display:flex;align-items:center;gap:8px}
-.pop-row .form-lbl{font-size:12px;font-weight:500;min-width:48px}
-.pop-track{flex:1;height:20px;background:var(--panel);border-radius:4px;overflow:hidden;border:0.5px solid var(--border)}
-.pop-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.pop-pct{font-size:12px;color:var(--muted);min-width:36px;text-align:right}
-
-/* MORPHOLOGY */
-.morph-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
-.morph-card{background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .2s}
-.morph-card:hover,.morph-card.sel{transform:scale(1.05)}
-.morph-card.sel{box-shadow:0 0 16px rgba(217,161,91,.4);border-color:var(--accent)}
-.morph-card svg{margin-bottom:6px}
-.morph-card h4{font-size:11px;font-weight:500;margin-bottom:2px}
-.morph-card p{font-size:10px;color:var(--muted)}
-#morph-detail{margin-top:12px;background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:16px;align-items:flex-start}
-#morph-detail svg{flex-shrink:0}
-#morph-detail .detail-text h3{font-size:16px;font-weight:500;margin-bottom:6px}
-#morph-detail .detail-text p{font-size:13px;color:var(--muted);line-height:1.6}
-#morph-detail .stats-mini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-#morph-detail .stats-mini div{background:rgba(255,255,255,.03);border-radius:6px;padding:8px 10px}
-#morph-detail .stats-mini label{font-size:10px;color:var(--muted);display:block}
-#morph-detail .stats-mini strong{font-size:13px}
-
-/* ENERGY */
-#energy-canvas{width:100%;height:220px;border-radius:8px;border:0.5px solid var(--border)}
-.energy-desc{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
-
-/* SNAP */
-.snap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-.snap-card{background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .2s}
-.snap-card:hover{border-color:var(--accent)}
-.snap-card h4{font-size:12px;font-weight:500;margin-bottom:8px}
-.snap-result{font-size:11px;margin-top:8px;padding:5px 8px;border-radius:6px}
-.snap-demo{height:50px;display:flex;align-items:center;justify-content:center;position:relative}
-#snap-detail{margin-top:12px;background:var(--panel);border:0.5px solid var(--border);border-radius:10px;padding:14px;text-align:center}
-#snap-detail h3{font-size:15px;font-weight:500;margin-bottom:8px}
-#snap-detail .snap-viz{display:flex;justify-content:center;margin:10px 0}
-#snap-detail p{font-size:13px;color:var(--muted)}
-
-/* BLOOM */
-#bloom-canvas{width:100%;height:200px;border-radius:8px;border:0.5px solid var(--border)}
-.bloom-ctrl{display:flex;align-items:center;gap:12px;margin-top:10px}
-.bloom-ctrl label{font-size:13px;color:var(--muted);white-space:nowrap}
-.bloom-ctrl input{flex:1}
-#bloom-info{margin-top:10px;font-size:13px;color:var(--muted);line-height:1.6}
-
-/* STORY */
-.story-panel{text-align:center}
-.story-step{display:none;animation:fadeIn .4s}
-.story-step.on{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-#story-canvas{width:100%;height:260px;border-radius:10px;border:0.5px solid var(--border);background:#0d0907;margin-bottom:16px}
-.story-narration{font-size:16px;line-height:1.7;margin-bottom:12px;min-height:60px}
-.story-narration strong{color:var(--accent)}
-.story-nav{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:16px}
-.story-nav button{padding:8px 20px;border-radius:20px;border:0.5px solid var(--border);background:transparent;color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
-.story-nav button:hover{background:var(--panel)}
-.story-nav button.primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:500}
-.story-dots{display:flex;gap:6px}
-.story-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .3s;cursor:pointer}
-.story-dot.on{background:var(--accent);width:20px;border-radius:4px}
-
-.stage-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;margin-bottom:8px}
-</style>
-
-<h2 class="sr-only">Chocolate tempering simulator showing crystal formation, morphology, energy landscape, and bloom across interactive tabs</h2>
-<div id="app">
-  <div class="tabs">
-    <button class="tab on" onclick="showTab('reactor')">Crystal Reactor</button>
-    <button class="tab" onclick="showTab('temper')">Tempering</button>
-    <button class="tab" onclick="showTab('morph')">Morphology</button>
-    <button class="tab" onclick="showTab('energy')">Energy</button>
-    <button class="tab" onclick="showTab('snap')">Snap Test</button>
-    <button class="tab" onclick="showTab('bloom')">Bloom</button>
-    <button class="tab" onclick="showTab('story')">Story Mode</button>
-  </div>
-
-  <!-- REACTOR -->
-  <div id="tab-reactor" class="section on">
-    <div class="card" style="padding:16px">
-      <canvas id="reactor-canvas"></canvas>
-      <div class="temp-ctrl">
-        <label>Temperature</label>
-        <input type="range" min="15" max="55" value="27" id="temp-slider" step="1" oninput="updateReactor(this.value)">
-        <div id="temp-display" style="color:var(--accent)">27°C</div>
-      </div>
-      <div class="crystal-legend" id="reactor-legend"></div>
-    </div>
-    <div class="card">
-      <div class="pop-bars" id="reactor-pop"></div>
-    </div>
-  </div>
-
-  <!-- TEMPERING -->
-  <div id="tab-temper" class="section">
-    <div class="card">
-      <canvas id="path-canvas"></canvas>
-    </div>
-    <div class="path-stages">
-      <div class="pstage on" onclick="setTempStage(0)">
-        <div class="temp">45°C</div>
-        <h4>Step 1: Melt</h4>
-        <p>All crystals dissolve into liquid cocoa butter</p>
-      </div>
-      <div class="pstage" onclick="setTempStage(1)">
-        <div class="temp">27°C</div>
-        <h4>Step 2: Cool</h4>
-        <p>Forms I, II, III, IV, V nucleate simultaneously</p>
-      </div>
-      <div class="pstage" onclick="setTempStage(2)">
-        <div class="temp">31°C</div>
-        <h4>Step 3: Reheat</h4>
-        <p>Forms I–IV melt away. Form V seeds survive</p>
-      </div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <div class="pop-bars" id="temper-pop"></div>
-    </div>
-  </div>
-
-  <!-- MORPHOLOGY -->
-  <div id="tab-morph" class="section">
-    <div class="morph-grid" id="morph-grid"></div>
-    <div id="morph-detail"></div>
-  </div>
-
-  <!-- ENERGY -->
-  <div id="tab-energy" class="section">
-    <div class="card" style="padding:16px">
-      <canvas id="energy-canvas"></canvas>
-      <p class="energy-desc">Each crystal form occupies a local minimum on the free energy surface. Cocoa butter spontaneously transforms toward lower-energy configurations. Form VI is the global minimum, but Form V kinetically dominates at tempering temperatures — making it stable enough for months of shelf life.</p>
-    </div>
-  </div>
-
-  <!-- SNAP TEST -->
-  <div id="tab-snap" class="section">
-    <div class="snap-grid" id="snap-grid"></div>
-    <div id="snap-detail"></div>
-  </div>
-
-  <!-- BLOOM -->
-  <div id="tab-bloom" class="section">
-    <div class="card" style="padding:16px">
-      <canvas id="bloom-canvas"></canvas>
-      <div class="bloom-ctrl">
-        <label>Storage time</label>
-        <input type="range" min="0" max="100" value="0" id="bloom-slider" step="1" oninput="updateBloom(this.value)">
-        <span id="bloom-time" style="font-size:13px;color:var(--muted);min-width:56px">Fresh</span>
-      </div>
-      <p id="bloom-info"></p>
-    </div>
-  </div>
-
-  <!-- STORY -->
-  <div id="tab-story" class="section story-panel">
-    <canvas id="story-canvas"></canvas>
-    <div id="story-steps"></div>
-    <div class="story-nav">
-      <button onclick="storyPrev()">Back</button>
-      <div class="story-dots" id="story-dots"></div>
-      <button class="primary" onclick="storyNext()" id="story-btn">Next</button>
-    </div>
-  </div>
-</div>
-
-<script>
 const FORMS = [
   {id:"I",  color:"#6d3f2d",melt:17,label:"Very soft, crumbly",stability:1,desc:"Forms when chocolate cools too rapidly. Melts near room temperature. Produces no snap, dull surface.",texture:"Very soft",imp:"Transient",shape:"needle"},
   {id:"II", color:"#87503a",melt:21,label:"Soft, dull",stability:2,desc:"Slightly more organized than Form I. Still weak and lustrous-free. Transforms quickly.",texture:"Soft",imp:"Transient",shape:"needle2"},
