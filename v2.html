@@ -1,0 +1,732 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,system-ui);background:transparent;color:var(--color-text-primary)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+.app{padding:6px 0 20px}
+
+.nav{display:flex;gap:3px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:14px;padding:4px;margin-bottom:20px;flex-wrap:wrap}
+.nb{flex:1;min-width:60px;padding:8px 4px;border:none;background:transparent;color:var(--color-text-secondary);font-size:11px;border-radius:10px;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center;line-height:1.2}
+.nb.on{background:var(--color-background-primary);color:var(--color-text-primary);font-weight:500}
+
+.pane{display:none;animation:fadein .25s ease}
+.pane.on{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+canvas{display:block;border-radius:10px;border:0.5px solid var(--color-border-tertiary);background:#0c0806}
+
+.ctrl{display:flex;align-items:center;gap:10px;margin-top:10px}
+.ctrl label{font-size:12px;color:var(--color-text-secondary);white-space:nowrap;min-width:80px}
+.ctrl input[type=range]{flex:1}
+.tval{font-size:20px;font-weight:500;min-width:52px;text-align:right;transition:color .3s}
+
+.popbars{display:flex;flex-direction:column;gap:4px;margin-top:12px}
+.pr{display:flex;align-items:center;gap:8px}
+.pr .lbl{font-size:11px;font-weight:500;min-width:46px}
+.pr .trk{flex:1;height:14px;border-radius:3px;overflow:hidden;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary)}
+.pr .bar{height:100%;border-radius:3px;transition:width .65s cubic-bezier(.4,0,.2,1)}
+.pr .pct{font-size:11px;color:var(--color-text-secondary);min-width:30px;text-align:right}
+
+.card2{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:14px;margin-top:12px}
+
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.stg{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px 10px;cursor:pointer;transition:all .15s}
+.stg:hover,.stg.on{border-color:#c8914a}
+.stg.on{background:rgba(200,145,74,.08)}
+.stg .deg{font-size:21px;font-weight:500;color:#c8914a;margin-bottom:3px}
+.stg h4{font-size:12px;font-weight:500;margin-bottom:3px}
+.stg p{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+
+.mgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+.mc{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;transition:all .15s}
+.mc:hover{transform:translateY(-2px)}
+.mc.on{transform:translateY(-3px);border-color:#c8914a;background:rgba(200,145,74,.1)}
+.mc h5{font-size:11px;font-weight:500;margin-top:5px}
+.mc span{font-size:10px;color:var(--color-text-secondary)}
+
+.mdetail{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:16px;display:flex;gap:16px}
+.mdetail .dtxt h3{font-size:15px;font-weight:500;margin-bottom:6px}
+.mdetail .dtxt p{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:10px}
+.m4{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.m4 div{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:6px;padding:7px 9px}
+.m4 label{font-size:10px;color:var(--color-text-secondary);display:block}
+.m4 strong{font-size:12px}
+
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.sc{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .15s}
+.sc:hover{border-color:#c8914a}
+.sc h4{font-size:12px;font-weight:500;margin-bottom:8px}
+.sres{font-size:10px;margin-top:7px;padding:4px 8px;border-radius:5px}
+.sdetail{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:14px}
+.sdetail h3{font-size:14px;font-weight:500;margin-bottom:6px}
+.sdetail p{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+
+.fgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.fc{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;cursor:pointer;transition:all .15s}
+.fc:hover,.fc.on{border-color:#c8914a}
+.fc.on{background:rgba(200,145,74,.07)}
+.fc h4{font-size:12px;font-weight:500;margin-bottom:4px}
+.fc p{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+.ftag{font-size:10px;margin-top:7px;padding:4px 8px;border-radius:5px;display:inline-block}
+
+.story-wrap{text-align:center}
+.snarr{font-size:13px;line-height:1.75;min-height:68px;margin:12px 0;color:var(--color-text-secondary)}
+.snarr strong{color:var(--color-text-primary)}
+.snav{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}
+.snav button{padding:7px 18px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.snav button:hover{background:var(--color-background-secondary)}
+.snav button.pri{background:#c8914a;border-color:#c8914a;color:#1a0e06;font-weight:500}
+.sdots{display:flex;gap:5px;align-items:center}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--color-border-secondary);cursor:pointer;transition:all .25s}
+.sdot.on{background:#c8914a;width:18px;border-radius:4px}
+.sbadge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:500;margin-bottom:6px}
+
+.tooltip{position:absolute;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:8px 11px;font-size:11px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:10;max-width:180px;line-height:1.5;color:var(--color-text-primary)}
+.cw{position:relative}
+
+.edesc{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-top:10px}
+
+.legend-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--color-text-secondary)}
+.leg span{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+</style>
+
+<h2 class="sr-only">Chocolate crystal science: live reactor, tempering path, morphology, energy landscape, snap test, fat bloom, failure modes and guided story</h2>
+
+<div class="app">
+
+<div class="nav">
+  <button class="nb on" onclick="goTab('reactor')">Crystal reactor</button>
+  <button class="nb" onclick="goTab('temper')">Tempering path</button>
+  <button class="nb" onclick="goTab('morph')">Morphology</button>
+  <button class="nb" onclick="goTab('energy')">Energy</button>
+  <button class="nb" onclick="goTab('snap')">Snap test</button>
+  <button class="nb" onclick="goTab('bloom')">Fat bloom</button>
+  <button class="nb" onclick="goTab('fail')">Failure modes</button>
+  <button class="nb" onclick="goTab('story')">Story</button>
+</div>
+
+<div id="pane-reactor" class="pane on">
+  <div class="cw">
+    <canvas id="rc" style="width:100%;height:320px"></canvas>
+    <div class="tooltip" id="rc-tip"></div>
+  </div>
+  <div class="ctrl">
+    <label>Temperature</label>
+    <input type="range" min="15" max="55" value="27" step="1" id="tsl" oninput="setTemp(+this.value)">
+    <div class="tval" id="tval">27°C</div>
+  </div>
+  <div class="legend-row" id="rlegend"></div>
+  <div class="popbars" id="rpop"></div>
+</div>
+
+<div id="pane-temper" class="pane">
+  <canvas id="tc" style="width:100%;height:160px"></canvas>
+  <div class="stages" id="tstages"></div>
+  <div class="popbars" id="tpop" style="margin-top:14px"></div>
+</div>
+
+<div id="pane-morph" class="pane">
+  <div class="mgrid" id="mgrid"></div>
+  <div class="mdetail" id="mdetail"></div>
+</div>
+
+<div id="pane-energy" class="pane">
+  <div class="cw">
+    <canvas id="ec" style="width:100%;height:240px"></canvas>
+    <div class="tooltip" id="ec-tip"></div>
+  </div>
+  <p class="edesc">Free energy decreases from Form I to Form VI — cocoa butter always seeks lower-energy configurations. Form V sits in a local minimum deep enough to last months at room temperature, but shallow enough that time and warmth eventually nudge it toward Form VI. The animated ball shows this spontaneous downhill journey.</p>
+</div>
+
+<div id="pane-snap" class="pane">
+  <div class="sgrid" id="sgrid"></div>
+  <div class="sdetail" id="sdetail"></div>
+</div>
+
+<div id="pane-bloom" class="pane">
+  <div class="cw">
+    <canvas id="bcanv" style="width:100%;height:220px"></canvas>
+  </div>
+  <div class="ctrl">
+    <label>Storage time</label>
+    <input type="range" min="0" max="100" value="0" step="1" id="bsl" oninput="doBloom(+this.value)">
+    <div class="tval" id="btime" style="font-size:13px;color:var(--color-text-secondary)">Fresh</div>
+  </div>
+  <div class="popbars" id="bpop" style="margin-top:10px"></div>
+  <p id="bdesc" style="font-size:12px;color:var(--color-text-secondary);margin-top:10px;line-height:1.6"></p>
+</div>
+
+<div id="pane-fail" class="pane">
+  <canvas id="fcanv" style="width:100%;height:190px"></canvas>
+  <div class="fgrid" id="fgrid"></div>
+</div>
+
+<div id="pane-story" class="pane story-wrap">
+  <canvas id="sc" style="width:100%;height:260px"></canvas>
+  <div id="ssteps"></div>
+  <div class="snav">
+    <button onclick="sPrev()">Back</button>
+    <div class="sdots" id="sdots"></div>
+    <button class="pri" onclick="sNext()" id="sbtn">Next</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const F=[
+  {id:"I",  c:"#7c3e28",mp:17,tex:"Very soft",imp:"Transient",stab:1,
+   snap:"Bends slowly",ss:1,
+   desc:"Forms when cocoa butter cools extremely fast. Melts near room temperature. No gloss, no snap — just a crumbly, dull mass. Transforms to Form II within hours.",
+   snapDesc:"The weak crystal network simply deforms. No crack propagates, no sound."},
+  {id:"II", c:"#924e32",mp:21,tex:"Soft",imp:"Transient",stab:2,
+   snap:"Bends, tears",ss:2,
+   desc:"Slightly more organised but still very unstable. Soft texture, lusterless surface. Converts rapidly to Form III at room temperature.",
+   snapDesc:"Minor resistance before tearing unevenly along weak crystal boundaries."},
+  {id:"III",c:"#aa6040",mp:26,tex:"Firm, dull",imp:"Intermediate",stab:3,
+   snap:"Dull crack",ss:3,
+   desc:"Developing structure but still chalky and dull. Firmer than I and II but transitions to more stable forms within days.",
+   snapDesc:"A crack propagates with little acoustic energy. Surface looks chalky."},
+  {id:"IV", c:"#c07850",mp:28,tex:"Quite firm",imp:"Near-tempered",stab:4,
+   snap:"Moderate crack",ss:4,
+   desc:"Can look attractive short-term but is semi-stable. Professional tempering aims to move fully past this form.",
+   snapDesc:"Noticeable fracture but the break line is uneven. Acceptable, not ideal."},
+  {id:"V",  c:"#d79d5b",mp:33,tex:"Perfect snap",imp:"The goal",stab:5,
+   snap:"Sharp snap",ss:6,
+   desc:"The legendary crystal. Dense lamellar packing produces brilliant gloss, crisp snap, and a melt temperature just below body temperature. Every technique in tempering exists to maximise Form V.",
+   snapDesc:"The dense ordered lattice transmits fracture energy perfectly — that iconic crisp sound and clean, straight break line."},
+  {id:"VI", c:"#f0ca7a",mp:36,tex:"Hard, waxy",imp:"Aging / bloom",stab:6,
+   snap:"Hard, waxy",ss:3,
+   desc:"Most thermodynamically stable. Slowly forms as Form V converts during long storage. Responsible for fat bloom — the pale dusty surface on old chocolate.",
+   snapDesc:"Extremely hard but leaves a greasy, waxy mouthfeel. Fat bloom visible on surface."},
+];
+
+const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+function popAt(t){
+  if(t>=43)return[0,0,0,0,0,0];
+  if(t>=37)return[0,0,0,2,10,0];
+  if(t>=34)return[1,2,4,8,62,0];
+  if(t>=32)return[3,5,8,12,66,0];
+  if(t>=30)return[6,9,12,16,52,0];
+  if(t>=27)return[10,14,17,20,34,0];
+  if(t>=22)return[22,20,18,15,20,0];
+  return[30,22,18,12,13,0];
+}
+
+function renderPop(id,pops){
+  const el=document.getElementById(id);if(!el)return;
+  const tot=pops.reduce((a,b)=>a+b,0)||1;
+  el.innerHTML=F.map((f,i)=>{
+    const p=Math.round(pops[i]/tot*100);
+    return`<div class="pr"><span class="lbl" style="color:${f.c}">Form ${f.id}</span><div class="trk"><div class="bar" style="width:${p}%;background:${f.c}"></div></div><span class="pct">${p}%</span></div>`;
+  }).join('');
+}
+
+function resizeCanvas(c){
+  const dpr=window.devicePixelRatio||1;
+  const w=c.parentElement.offsetWidth||680;
+  c.width=Math.round(w*dpr);
+  const style=c.getAttribute('style')||'';
+  const mh=parseInt(style.match(/height:(\d+)px/)?.[1])||300;
+  c.height=Math.round(mh*dpr);
+  const ctx=c.getContext('2d');
+  ctx.scale(dpr,dpr);
+  return{w,h:mh,ctx,dpr};
+}
+
+/* ====== REACTOR ====== */
+let parts=[];
+let curT=27;
+let rcRAF;
+
+function mkPart(W,H,t){
+  const p=popAt(t),tot=p.reduce((a,b)=>a+b,0)||1;
+  let r=Math.random()*tot,fi=0;
+  for(let i=0;i<6;i++){r-=p[i];if(r<=0){fi=i;break;}}
+  return{x:Math.random()*W,y:Math.random()*H,
+    vx:(Math.random()-.5)*.55,vy:(Math.random()-.5)*.55,
+    fi,sz:2+Math.random()*4,rot:Math.random()*Math.PI*2,
+    vr:(Math.random()-.5)*.04,life:150+Math.random()*130,age:0};
+}
+
+function drawXtal(ctx,fi,x,y,sz,rot,al){
+  if(al<=0.01)return;
+  ctx.save();ctx.globalAlpha=clamp(al,0,1);ctx.translate(x,y);ctx.rotate(rot);
+  const col=F[fi].c;
+  ctx.fillStyle=col;ctx.strokeStyle=col;
+  if(fi===0||fi===1){
+    const w=sz*.28,h=sz*2.2;
+    ctx.fillRect(-w/2,-h/2,w,h);
+    if(fi===1){ctx.globalAlpha*=.5;ctx.fillRect(w*.2,-h*.45,w*.7,h*.85);}
+  } else if(fi===2||fi===3){
+    ctx.beginPath();
+    ctx.moveTo(0,-sz);ctx.lineTo(sz*.7,0);ctx.lineTo(0,sz);ctx.lineTo(-sz*.7,0);
+    ctx.closePath();ctx.fill();
+    if(fi===3){ctx.globalAlpha*=.35;ctx.beginPath();
+      ctx.moveTo(0,-sz*.55);ctx.lineTo(sz*.38,0);ctx.lineTo(0,sz*.55);ctx.lineTo(-sz*.38,0);
+      ctx.closePath();ctx.fill();}
+  } else {
+    ctx.beginPath();
+    for(let i=0;i<6;i++){const a=i*Math.PI/3-Math.PI/6;ctx.lineTo(Math.cos(a)*sz,Math.sin(a)*sz);}
+    ctx.closePath();ctx.fill();
+    if(fi===5){ctx.globalAlpha*=.4;ctx.lineWidth=1.2;ctx.beginPath();
+      for(let i=0;i<6;i++){const a=i*Math.PI/3-Math.PI/6;ctx.lineTo(Math.cos(a)*sz*1.55,Math.sin(a)*sz*1.55);}
+      ctx.closePath();ctx.stroke();}
+  }
+  ctx.restore();
+}
+
+function tickReactor(){
+  const c=document.getElementById('rc');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth||680;
+  const H=parseInt(c.style.height)||320;
+  if(c.width!==Math.round(W*dpr)){c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);}
+  const ctx=c.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  const t=curT;
+  if(t>=43){
+    ctx.fillStyle='rgba(200,100,20,.05)';ctx.fillRect(0,0,W,H);
+    for(let i=0;i<20;i++){
+      ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H,Math.random()*2,0,Math.PI*2);
+      ctx.fillStyle=`rgba(215,157,91,${Math.random()*.2})`;ctx.fill();
+    }
+    ctx.fillStyle='rgba(200,155,80,.55)';ctx.font='13px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Fully molten — zero crystal structure',W/2,H/2);
+    rcRAF=requestAnimationFrame(tickReactor);return;
+  }
+
+  const target=Math.round((50-t)*5.5);
+  while(parts.length<target)parts.push(mkPart(W,H,t));
+  parts=parts.filter(p=>p.age<p.life);
+
+  parts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.age++;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    const al=Math.sin(Math.PI*p.age/p.life)*.78+.14;
+    drawXtal(ctx,p.fi,p.x,p.y,p.sz,p.rot,al);
+  });
+
+  const activeForm=popAt(t).indexOf(Math.max(...popAt(t)));
+  const tip=document.getElementById('rc-tip');
+  if(tip){
+    tip.textContent=`Dominant: Form ${F[activeForm].id} · ${Math.round(t)}°C`;
+    tip.style.opacity='1';tip.style.top='8px';tip.style.right='10px';tip.style.left='auto';
+  }
+  rcRAF=requestAnimationFrame(tickReactor);
+}
+
+function setTemp(t){
+  curT=t;
+  const el=document.getElementById('tval');el.textContent=t+'°C';
+  const cols=['#7c3e28','#924e32','#aa6040','#c07850','#d79d5b','#e8a830'];
+  el.style.color=t<20?cols[0]:t<24?cols[1]:t<28?cols[2]:t<32?cols[3]:t<36?cols[4]:cols[5];
+  renderPop('rpop',popAt(t));
+  parts=[];
+}
+
+function buildReactorLegend(){
+  document.getElementById('rlegend').innerHTML=F.map(f=>`<div class="leg"><span style="background:${f.c}"></span>Form ${f.id}</div>`).join('');
+}
+
+/* ====== TEMPERING PATH ====== */
+const TSTG=[
+  {deg:'45°C',h:'Melt everything',p:'All crystal memory erased. Pure liquid cocoa butter.',pops:[0,0,0,0,0,0]},
+  {deg:'27°C',h:'Nucleation chaos',p:'Forms I–V all nucleate simultaneously.',pops:[10,14,17,20,34,0]},
+  {deg:'31°C',h:'Selective melt',p:'I–IV dissolve. Form V (mp 33°C) survives.',pops:[0,0,0,0,96,4]},
+];
+let tStg=0;
+
+function initTemper(){
+  document.getElementById('tstages').innerHTML=TSTG.map((s,i)=>`
+    <div class="stg${i===0?' on':''}" id="tst${i}" onclick="setTStg(${i})">
+      <div class="deg">${s.deg}</div>
+      <h4>${s.h}</h4>
+      <p>${s.p}</p>
+    </div>`).join('');
+  renderPop('tpop',TSTG[0].pops);
+}
+
+function setTStg(i){
+  tStg=i;
+  document.querySelectorAll('.stg').forEach((s,j)=>s.classList.toggle('on',j===i));
+  renderPop('tpop',TSTG[i].pops);
+  drawTPath();
+}
+
+function drawTPath(){
+  const c=document.getElementById('tc');
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth||680,H=160;
+  c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const pl=44,pr=16,pt=22,pb=28;
+
+  ctx.clearRect(0,0,W,H);
+  const pts=[[pl,pt],[pl+(W-pl-pr)*.2,pt],[pl+(W-pl-pr)*.42,H-pb],
+             [pl+(W-pl-pr)*.64,H-pb],[pl+(W-pl-pr)*.78,H-pb+14],[W-pr,pt+26]];
+  const stageIdx=[1,2,5];
+  const stageLabel=['','45°C','27°C','','','31°C'];
+
+  ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=.5;ctx.setLineDash([3,4]);
+  ctx.beginPath();ctx.moveTo(pl,pt);ctx.lineTo(pl,H-pb);ctx.lineTo(W-pr,H-pb);ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.strokeStyle='rgba(200,145,74,.65)';ctx.lineWidth=1.8;ctx.lineJoin='round';
+  ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();
+
+  stageIdx.forEach((pi,si)=>{
+    const p=pts[pi];
+    ctx.beginPath();ctx.arc(p[0],p[1],tStg===si?7:5,0,Math.PI*2);
+    ctx.fillStyle=tStg===si?'#d79d5b':'rgba(200,145,74,.35)';ctx.fill();
+  });
+
+  ctx.fillStyle='rgba(200,155,90,.75)';ctx.font='11px system-ui';ctx.textAlign='center';ctx.textBaseline='bottom';
+  pts.forEach((p,i)=>{if(stageLabel[i])ctx.fillText(stageLabel[i],p[0],p[1]-10);});
+
+  ctx.fillStyle='rgba(140,120,90,.5)';ctx.font='10px system-ui';
+  ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('temp',2,pt);
+  ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText('time',W/2,H-2);
+}
+
+/* ====== MORPHOLOGY ====== */
+function morphSVG(fi,col,sz){
+  const s=sz,c=s/2;
+  const pts6=(r,off=0)=>{let o='';for(let i=0;i<6;i++){const a=i*Math.PI/3-Math.PI/6+off;o+=`${(c+Math.cos(a)*r).toFixed(1)},${(c+Math.sin(a)*r).toFixed(1)} `;}return o;};
+  switch(fi){
+    case 0:return`<rect x="${(c-s*.13).toFixed(1)}" y="${(c-s*.52).toFixed(1)}" width="${(s*.26).toFixed(1)}" height="${(s*1.04).toFixed(1)}" rx="${(s*.06).toFixed(1)}" fill="${col}"/>`;
+    case 1:return`<rect x="${(c-s*.16).toFixed(1)}" y="${(c-s*.5).toFixed(1)}" width="${(s*.22).toFixed(1)}" height="${s}" rx="${(s*.05).toFixed(1)}" fill="${col}"/><rect x="${(c+s*.08).toFixed(1)}" y="${(c-s*.36).toFixed(1)}" width="${(s*.17).toFixed(1)}" height="${(s*.72).toFixed(1)}" rx="${(s*.04).toFixed(1)}" fill="${col}" opacity=".55"/>`;
+    case 2:return`<polygon points="${c},${(c-s*.5).toFixed(1)} ${(c+s*.46).toFixed(1)},${c} ${c},${(c+s*.5).toFixed(1)} ${(c-s*.46).toFixed(1)},${c}" fill="${col}"/>`;
+    case 3:return`<polygon points="${c},${(c-s*.5).toFixed(1)} ${(c+s*.46).toFixed(1)},${c} ${c},${(c+s*.5).toFixed(1)} ${(c-s*.46).toFixed(1)},${c}" fill="${col}"/><polygon points="${c},${(c-s*.28).toFixed(1)} ${(c+s*.25).toFixed(1)},${c} ${c},${(c+s*.28).toFixed(1)} ${(c-s*.25).toFixed(1)},${c}" fill="${col}" opacity=".38"/>`;
+    case 4:return`<polygon points="${pts6(s*.46)}" fill="${col}"/>`;
+    case 5:return`<polygon points="${pts6(s*.44)}" fill="${col}"/><polygon points="${pts6(s*.6)}" fill="none" stroke="${col}" stroke-width="1.3" opacity=".45"/>`;
+  }return'';
+}
+
+function initMorph(){
+  document.getElementById('mgrid').innerHTML=F.map((f,i)=>`
+    <div class="mc" id="mc${i}" onclick="showMorph(${i})">
+      <svg width="36" height="36" viewBox="0 0 36 36">${morphSVG(i,f.c,36)}</svg>
+      <h5>Form ${f.id}</h5><span>${f.mp}°C</span>
+    </div>`).join('');
+  showMorph(4);
+}
+
+function showMorph(i){
+  document.querySelectorAll('.mc').forEach((c,j)=>c.classList.toggle('on',j===i));
+  const f=F[i];
+  const stabs=['Very low','Low','Moderate','Medium','High','Highest'];
+  document.getElementById('mdetail').innerHTML=`
+    <svg width="88" height="88" viewBox="0 0 88 88" style="flex-shrink:0">${morphSVG(i,f.c,88)}</svg>
+    <div class="dtxt">
+      <h3 style="color:${f.c}">Form ${f.id}</h3>
+      <p>${f.desc}</p>
+      <div class="m4">
+        <div><label>Melting point</label><strong>${f.mp}°C</strong></div>
+        <div><label>Stability</label><strong>${stabs[i]}</strong></div>
+        <div><label>Texture</label><strong>${f.tex}</strong></div>
+        <div><label>Role</label><strong>${f.imp}</strong></div>
+      </div>
+    </div>`;
+}
+
+/* ====== ENERGY LANDSCAPE ====== */
+let energyRAF;
+function drawEnergy(){
+  const c=document.getElementById('ec');
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth||680,H=240;
+  c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const pl=36,pr=18,pt=32,pb=36;
+  const en=[.93,.78,.64,.50,.22,.04];
+  const xs=F.map((_,i)=>pl+(W-pl-pr)*(i+.5)/6);
+  const ys=en.map(e=>pt+(H-pt-pb)*(1-e)*.9);
+
+  let bi=0,bf=0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+
+    ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=.5;
+    for(let i=0;i<=4;i++){const y=pt+(H-pt-pb)*i/4;ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(W-pr,y);ctx.stroke();}
+
+    ctx.strokeStyle='rgba(200,145,74,.55)';ctx.lineWidth=1.8;ctx.lineJoin='round';
+    ctx.beginPath();xs.forEach((x,i)=>i?ctx.lineTo(x,ys[i]):ctx.moveTo(x,ys[i]));ctx.stroke();
+
+    F.forEach((f,i)=>{
+      const isHov=i===Math.round(bf)&&bi===i-1||bi===i;
+      ctx.beginPath();ctx.arc(xs[i],ys[i],isHov?7:5,0,Math.PI*2);ctx.fillStyle=f.c;ctx.fill();
+      ctx.fillStyle='rgba(210,175,110,.85)';ctx.font='11px system-ui';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText('Form '+f.id,xs[i],ys[i]-10);
+      ctx.fillStyle='rgba(130,110,80,.6)';ctx.font='10px system-ui';ctx.textBaseline='top';
+      ctx.fillText(f.mp+'°C',xs[i],H-pb+6);
+    });
+
+    ctx.fillStyle='rgba(130,110,80,.5)';ctx.font='10px system-ui';ctx.textAlign='left';ctx.textBaseline='top';
+    ctx.fillText('unstable (high energy)',pl,pt-18);
+    ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText('stable (low energy)',W-pr,H-pb+4);
+
+    const bx=lerp(xs[bi],xs[Math.min(bi+1,5)],bf);
+    const by=lerp(ys[bi],ys[Math.min(bi+1,5)],bf)-8;
+    ctx.beginPath();ctx.arc(bx,by,8,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,215,100,.92)';ctx.fill();
+    ctx.strokeStyle='rgba(200,155,50,.5)';ctx.lineWidth=1.5;ctx.stroke();
+
+    const tip=document.getElementById('ec-tip');
+    if(tip&&bi<6){
+      tip.style.opacity='1';tip.style.right='10px';tip.style.top='8px';tip.style.left='auto';
+      tip.innerHTML=`<strong style="color:${F[bi].c}">Form ${F[bi].id}</strong><br>${F[bi].mp}°C melting pt<br>${['Very unstable','Unstable','Moderately stable','Semi-stable','Kinetically favoured','Thermodynamically stable'][bi]}`;
+    }
+    bf+=.0065;
+    if(bf>=1){bf=0;bi++;if(bi>=5)bi=0;}
+    energyRAF=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+/* ====== SNAP ====== */
+function snapSVG(ss,col,scale=1){
+  const w=Math.round(86*scale),h=Math.round(44*scale),m=h/2;
+  if(ss>=6)return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect x="3" y="${m-5}" width="${w*.38}" height="10" rx="2" fill="${col}"/><rect x="${w*.52}" y="${m-5}" width="${w*.45}" height="10" rx="2" fill="${col}"/><line x1="${w*.41}" y1="${m-2}" x2="${w*.5}" y2="${m-2}" stroke="${col}" stroke-width="1" stroke-dasharray="1.5"/><line x1="${w*.41}" y1="${m+2}" x2="${w*.5}" y2="${m+2}" stroke="${col}" stroke-width="1" stroke-dasharray="1.5"/></svg>`;
+  if(ss>=4){const d=ss===4?5:9;return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><path d="M3 ${m} L${w*.42} ${m} L${w-.04*w} ${m+d}" stroke="${col}" stroke-width="9" stroke-linecap="round" fill="none"/></svg>`;}
+  return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><path d="M3 ${m} Q${w/2} ${m} ${w-4} ${m+13}" stroke="${col}" stroke-width="9" stroke-linecap="round" fill="none"/></svg>`;
+}
+
+function initSnap(){
+  document.getElementById('sgrid').innerHTML=F.map((f,i)=>`
+    <div class="sc" onclick="showSnap(${i})">
+      <h4>Form ${f.id}</h4>${snapSVG(f.ss,f.c)}
+      <div class="sres" style="background:${f.c}1a;color:${f.c}">${f.snap}</div>
+    </div>`).join('');
+  showSnap(4);
+}
+
+function showSnap(i){
+  const f=F[i];
+  document.getElementById('sdetail').innerHTML=`
+    <h3 style="color:${f.c}">Form ${f.id} — ${f.snap}</h3>
+    <div style="margin:10px 0;display:flex;justify-content:center">${snapSVG(f.ss,f.c,1.4)}</div>
+    <p>${f.snapDesc}</p>`;
+}
+
+/* ====== BLOOM ====== */
+let bloomData=null;
+function initBloom(){
+  const c=document.getElementById('bcanv');
+  const W=c.parentElement.offsetWidth||680;
+  bloomData=new Uint8Array(W*3);
+  for(let x=0;x<W;x++){
+    const n=Math.sin(x*.31)*Math.cos(x*.19+1.2)*.5+.5+Math.sin(x*.07+.4)*.3;
+    bloomData[x]=Math.round(clamp(n,0,1)*100);
+  }
+  doBloom(0);
+}
+
+function doBloom(v){
+  v=+v;const t=v/100;
+  const c=document.getElementById('bcanv');
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth||680,H=220;
+  c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+
+  const bw=W*.64,bh=H*.38,bx=(W-bw)/2,by=H*.16;
+
+  ctx.fillStyle='#180c06';ctx.beginPath();ctx.roundRect(bx,by,bw,bh,8);ctx.fill();
+
+  const id=ctx.createImageData(Math.round(bw),Math.round(bh));
+  const bd=bloomData||(new Uint8Array(Math.round(bw)).fill(50));
+  for(let px=0;px<Math.round(bw);px++){
+    const noise=(bd[Math.round(px*W/bw)]||50)/100;
+    const bloom=clamp((t+noise*.3-.1)*1.35,0,1);
+    const r=Math.round(lerp(28,195,bloom));
+    const g=Math.round(lerp(12,182,bloom));
+    const b=Math.round(lerp(5,142,bloom));
+    for(let py=0;py<Math.round(bh);py++){
+      const idx=(py*Math.round(bw)+px)*4;
+      const surf=py<Math.round(bh*.18)?bloom*.6:0;
+      id.data[idx]=clamp(r+Math.round(surf*60),0,255);
+      id.data[idx+1]=clamp(g+Math.round(surf*50),0,255);
+      id.data[idx+2]=clamp(b+Math.round(surf*30),0,255);
+      id.data[idx+3]=255;
+    }
+  }
+  ctx.putImageData(id,Math.round(bx),Math.round(by));
+
+  ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=.5;ctx.beginPath();ctx.roundRect(bx,by,bw,bh,8);ctx.stroke();
+  ctx.fillStyle='rgba(190,155,100,.55)';ctx.font='11px system-ui';ctx.textAlign='center';ctx.textBaseline='bottom';
+  ctx.fillText('Chocolate cross section — surface / interior view',W/2,by-6);
+
+  const barY=by+bh+20,barW=bw;
+  const v5=clamp(Math.round((1-t*.93)*96),0,100),v6=100-v5;
+  ctx.fillStyle='rgba(255,255,255,.06)';ctx.beginPath();ctx.roundRect(bx,barY,barW,11,3);ctx.fill();
+  if(v5>0){ctx.fillStyle='#d79d5b';ctx.beginPath();ctx.roundRect(bx,barY,barW*v5/100,11,v6>2?[3,0,0,3]:3);ctx.fill();}
+  if(v6>0){ctx.fillStyle='#f0ca7a';ctx.beginPath();ctx.roundRect(bx+barW*v5/100,barY,barW*v6/100,11,v5>2?[0,3,3,0]:3);ctx.fill();}
+  ctx.fillStyle='rgba(180,150,100,.7)';ctx.font='10px system-ui';ctx.textBaseline='top';
+  ctx.textAlign='left';ctx.fillText(`Form V ${v5}%`,bx,barY+15);
+  ctx.textAlign='right';ctx.fillText(`Form VI ${v6}%`,bx+barW,barY+15);
+
+  const labels=['Fresh — Form V dominant (glossy, snappy)',
+    'Mild aging — Form V slowly converting',
+    'Fat bloom developing — Form VI nucleating at surface',
+    'Heavy bloom — surface whitening clearly visible'];
+  document.getElementById('bdesc').textContent=labels[t<.12?0:t<.45?1:t<.75?2:3];
+  document.getElementById('btime').textContent=t<.08?'Fresh':t<.25?'1 month':t<.55?'3 months':t<.82?'6 months':'12+ months';
+  renderPop('bpop',[0,0,0,0,v5,v6]);
+}
+
+/* ====== FAILURE MODES ====== */
+const FAILS=[
+  {k:'hot',h:'Too hot (>35°C)',p:'All Form V melts away. Random polymorph mix sets — dull, soft, bloom-prone.',pops:[7,11,14,17,7,0],col:'#d04020',tag:'Failure'},
+  {k:'cold',h:'Too cold (<24°C)',p:'Forms I–IV dominate. Soft, dull chocolate with high bloom risk within days.',pops:[28,22,18,13,14,0],col:'#3870c0',tag:'Failure'},
+  {k:'fast',h:'Too fast (rushed)',p:'Insufficient Form V seeding time. Mixed population, likely to bloom within weeks.',pops:[7,10,14,19,38,0],col:'#c08010',tag:'Failure'},
+  {k:'ok',h:'Perfect tempering',p:'Form V dominates. Brilliant gloss, sharp snap, months of shelf stability.',pops:[0,0,0,1,95,4],col:'#4a9e60',tag:'Ideal'},
+];
+let failSel=3;
+
+function initFail(){
+  document.getElementById('fgrid').innerHTML=FAILS.map((f,i)=>`
+    <div class="fc${i===3?' on':''}" id="fc${i}" onclick="setFail(${i})">
+      <h4>${f.h}</h4><p>${f.p}</p>
+      <span class="ftag" style="background:${f.col}1a;color:${f.col}">${f.tag}</span>
+    </div>`).join('');
+  drawFail(3);
+}
+
+function setFail(i){
+  failSel=i;
+  document.querySelectorAll('.fc').forEach((c,j)=>c.classList.toggle('on',j===i));
+  drawFail(i);
+}
+
+function drawFail(i){
+  const f=FAILS[i];
+  const c=document.getElementById('fcanv');
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth||680,H=190;
+  c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+
+  const tot=f.pops.reduce((a,b)=>a+b,0)||1;
+  const bw=clamp((W-80)/7,40,90),gap=clamp((W-40-bw*6)/7,4,16);
+  const startX=(W-bw*6-gap*5)/2;
+
+  F.forEach((fm,j)=>{
+    const x=startX+j*(bw+gap);
+    const pct=f.pops[j]/tot;
+    const barH=pct*(H-52);
+    const y=H-30-barH;
+    const isKey=i===3?j===4:(j<4&&i!==3);
+    ctx.fillStyle=isKey?fm.c:fm.c+'40';
+    if(barH>0){ctx.beginPath();ctx.roundRect(x,y,bw,barH,3);ctx.fill();}
+
+    ctx.fillStyle='rgba(180,150,110,.75)';ctx.font='11px system-ui';ctx.textAlign='center';ctx.textBaseline='bottom';
+    ctx.fillText('F'+fm.id,x+bw/2,H-12);
+    if(pct>.01){ctx.textBaseline='bottom';ctx.fillText(Math.round(pct*100)+'%',x+bw/2,y-3);}
+  });
+}
+
+/* ====== STORY ====== */
+const STORIES=[
+  {badge:'45°C',col:'#d04020',narr:'We heat to <strong>45°C</strong>, erasing every crystal from memory. The cocoa butter is completely liquid — no Form I, II, III, IV, V or VI remains.',spops:[0,0,0,0,0,0],t:47},
+  {badge:'Cooling fast',col:'#924e32',narr:'Dropping below 30°C triggers <strong>simultaneous nucleation</strong> of all six forms. Thousands of crystals appear at once — the system is thermodynamic chaos.',spops:[10,14,17,20,34,0],t:27},
+  {badge:'27°C',col:'#c07850',narr:'At 27°C the population is <strong>dominated by Forms I–IV</strong>. If we set the chocolate here, it would be dull, soft, and visibly bloom within days.',spops:[10,14,17,20,34,0],t:27},
+  {badge:'Reheating',col:'#d79d5b',narr:'Raising carefully to 31°C, we exploit melting point differences. <strong>Forms I–IV melt away</strong> (mp 17–28°C). Form V at 33°C remains untouched.',spops:[3,5,8,11,68,0],t:31},
+  {badge:'Form V survives',col:'#c8b060',narr:'<strong>Only Form V seeds remain.</strong> As the chocolate cools fully, these act as templates — propagating their lamellar structure through the entire mass.',spops:[0,0,0,1,96,3],t:31},
+  {badge:'Set',col:'#4a9e60',narr:'The result: <strong>brilliant gloss, crisp snap, smooth melt at 33°C</strong> — just below body temperature. This is perfectly tempered chocolate.',spops:[0,0,0,0,97,3],t:31},
+  {badge:'Months later',col:'#b89a50',narr:'Slowly, Form V <strong>converts to Form VI</strong> — the true thermodynamic minimum. Fat migrates to the surface and recrystallises as the pale dusty haze of fat bloom.',spops:[0,0,0,0,48,52],t:36},
+];
+let sStep=0;
+let sParts=[];
+
+function initStory(){
+  document.getElementById('sdots').innerHTML=STORIES.map((_,i)=>`<div class="sdot${i===0?' on':''}" id="sd${i}" onclick="goStory(${i})"></div>`).join('');
+  document.getElementById('ssteps').innerHTML=STORIES.map((s,i)=>`
+    <div style="display:${i===0?'block':'none'}" id="ss${i}">
+      <span class="sbadge" style="background:${s.col}22;color:${s.col}">${s.badge}</span>
+      <p class="snarr">${s.narr}</p>
+    </div>`).join('');
+}
+
+function renderStory(){
+  STORIES.forEach((_,i)=>{
+    document.getElementById('sd'+i)?.classList.toggle('on',i===sStep);
+    const el=document.getElementById('ss'+i);if(el)el.style.display=i===sStep?'block':'none';
+  });
+  document.getElementById('sbtn').textContent=sStep>=STORIES.length-1?'Restart':'Next';
+  drawStoryCanvas();
+}
+
+function drawStoryCanvas(){
+  const s=STORIES[sStep];
+  const c=document.getElementById('sc');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth||680,H=260;
+  c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+
+  const t=s.t,pops=s.spops;
+  if(t>=43){
+    ctx.fillStyle='rgba(200,100,20,.05)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(200,155,80,.5)';ctx.font='13px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('All crystal memory erased',W/2,H/2);return;
+  }
+  const tot=pops.reduce((a,b)=>a+b,0)||1;
+  const n=Math.round((50-t)*5);
+  while(sParts.length<n)sParts.push(mkPart(W,H,t));
+  sParts=sParts.slice(0,Math.min(n+50,300));
+  sParts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.age=Math.min(p.age+1,p.life);
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    const al=Math.sin(Math.PI*p.age/p.life)*.75+.14;
+    const inPop=pops[p.fi]>0;
+    drawXtal(ctx,p.fi,p.x,p.y,p.sz,p.rot,inPop?al:al*.15);
+  });
+  if(sStep===4||sStep===5){
+    for(let i=0;i<8;i++){ctx.beginPath();ctx.arc(W/2,H/2,(i+1)*30,0,Math.PI*2);
+      ctx.strokeStyle=`rgba(215,157,91,${.03+i*.005})`;ctx.lineWidth=1.5;ctx.stroke();}
+  }
+}
+
+function goStory(i){sStep=i;sParts=[];renderStory();}
+function sNext(){sStep=sStep>=STORIES.length-1?0:sStep+1;sParts=[];renderStory();}
+function sPrev(){if(sStep>0){sStep--;sParts=[];renderStory();}}
+
+/* ====== TAB ROUTER ====== */
+const TABS=['reactor','temper','morph','energy','snap','bloom','fail','story'];
+function goTab(id){
+  document.querySelectorAll('.nb').forEach((b,i)=>b.classList.toggle('on',TABS[i]===id));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pane-'+id).classList.add('on');
+  if(id==='temper')requestAnimationFrame(drawTPath);
+  if(id==='energy'){if(energyRAF)cancelAnimationFrame(energyRAF);requestAnimationFrame(drawEnergy);}
+  if(id==='bloom')requestAnimationFrame(()=>doBloom(+document.getElementById('bsl').value));
+  if(id==='fail')requestAnimationFrame(()=>drawFail(failSel));
+  if(id==='story')requestAnimationFrame(renderStory);
+}
+
+/* ====== BOOT ====== */
+setTemp(27);
+buildReactorLegend();
+renderPop('rpop',popAt(27));
+tickReactor();
+initTemper();
+requestAnimationFrame(drawTPath);
+initMorph();
+initSnap();
+initFail();
+initStory();
+setTimeout(()=>{
+  drawEnergy();
+  initBloom();
+},120);
+</script>
